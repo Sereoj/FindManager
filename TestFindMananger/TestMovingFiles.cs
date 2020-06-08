@@ -1,21 +1,20 @@
 ﻿using FindManagerLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SettingsManager;
 using System.Collections.Generic;
+using SettingsManager;
 
 namespace TestFindMananger
 {
     [TestClass]
     public class App1
     {
-        private bool _method1_TestArgsException;
-        private bool _method2_TestArgsException;
 
-        [TestInitialize]
+
+        [TestMethod]
         public void TestMovingFiles()
         {
-            var FirstDirectory = "";
-            var SecondDirectory = "";
+            var FirstDirectory = @"C:\Users\Admin\Desktop\Test\";
+            var SecondDirectory = @"C:\Users\Admin\Desktop\Test\";
 
             var Files = new List<Setting>
             {
@@ -36,24 +35,20 @@ namespace TestFindMananger
              * type 1
              */
 
-            foreach(var file in Files  )
-            {
-                new FindManager(FirstDirectory, SecondDirectory, false).SearchFiles(file.Catalog, file.Extension, modeFile: FindManager.ModeFile.Ignore);
-            }
+        //    foreach(var file in Files  )
+        //    {
+         //       _method1_TestArgsException = new FindManager(FirstDirectory, SecondDirectory, false).SearchFiles(file.Catalog, file.Extension, modeFile: FindManager.ModeFile.Ignore);
+         //   }
 
 
             /*
              * type 2
              */
-            new FindManager(FirstDirectory, SecondDirectory, false).SearchFiles(Files, modeFile: FindManager.ModeFile.Ignore);
+            var _method2_TestArgsException = new FindManager(FirstDirectory, SecondDirectory, false).SearchFiles(Files, modeFile: FindManager.ModeFile.Copy);
 
-
-            _method1_TestArgsException = new FindManager(FirstDirectory, SecondDirectory, false).SearchFiles("", "", FindManager.ModeFile.Ignore);
-
-            _method2_TestArgsException = new FindManager("", "", false).SearchFiles(Files, modeFile: FindManager.ModeFile.Ignore); //Тест на TestArgsException 
-
-            Assert.AreEqual(true, _method1_TestArgsException);
-            Assert.AreEqual(true, _method2_TestArgsException);
+           // Assert.IsTrue(_method1_TestArgsException);
+            Assert.IsTrue(_method2_TestArgsException);
+            //Assert.IsNotNull(_method2_TestArgsException);
 
 
 

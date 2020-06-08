@@ -20,6 +20,10 @@ namespace FindManagerLib
         private string DEFAULT_PATH { get; set; }
         private string OUTPUT_PATH { get; set; }
 
+        /*
+         * Output Message for UI
+         */
+        private string FindMessage { get;set;}
 
         /*
          * DeleteDefaultDirectory - Удаление начальной папки после сортировки.
@@ -76,6 +80,10 @@ namespace FindManagerLib
         */
         public bool SearchFiles(string PathNewDirectory, string PatternExtension, ModeFile modeFile)
         {
+            var NewDirectory = OUTPUT_PATH + PathNewDirectory + @"\";
+            if(IsPathExists(NewDirectory))
+            CreateDirectory(NewDirectory);
+
             foreach (var GetAllFiles in Directory.GetFiles(DEFAULT_PATH, PatternExtension.ToLower(), SearchOption.TopDirectoryOnly))
             {
                 try
@@ -84,17 +92,20 @@ namespace FindManagerLib
                     if (GetExtension != null && PatternExtension.Contains(GetExtension.ToLower()) && GetExtension.Length > 0)
                     {
                         FileInfo InfoFile = new FileInfo(GetAllFiles);
-                        if (!File.Exists(Path.Combine(PathNewDirectory, InfoFile.Name)))
+                        if (!File.Exists(Path.Combine(NewDirectory, InfoFile.Name)))
                         {
                             switch (modeFile)
                             {
                                 case ModeFile.Copy:
-                                    InfoFile.CopyTo(Path.Combine(PathNewDirectory, InfoFile.Name), true);
+                                    InfoFile.CopyTo(Path.Combine(NewDirectory, InfoFile.Name), true);
+                                    FindMessage = "Copying: " + InfoFile.FullName;
                                     break;
                                 case ModeFile.Move:
-                                    InfoFile.MoveTo(Path.Combine(PathNewDirectory, InfoFile.Name));
+                                    InfoFile.MoveTo(Path.Combine(NewDirectory, InfoFile.Name));
+                                    FindMessage = "Moving: " + InfoFile.FullName;
                                     break;
                                 case ModeFile.Ignore:
+                                    FindMessage = "Ignoring: " + InfoFile.FullName;
                                     break;
                             }
 
@@ -104,16 +115,20 @@ namespace FindManagerLib
                 }
                 catch (ArgumentException Message)
                 {
-
-                    throw new ArgumentException(Message.Message); //Выводим ошибку
+                    FindMessage = Message.Message;
 
                 }
             }
-
+            FindMessage = "Success";
             if (DeleteDefaultDirectory != false)
                 DeleteDirectory(DEFAULT_PATH); // Удаление начальной папки
 
             return false;
+        }
+
+        public override string ToString()
+        {
+            return FindMessage;
         }
     }
 }

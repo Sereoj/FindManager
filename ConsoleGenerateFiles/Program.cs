@@ -6,7 +6,7 @@ namespace ConsoleGenerateFiles
 {
     class Program
     {
-        private const string PATH = ""; // В конце обязательно \\
+        private const string PATH = @"C:\Users\Admin\Desktop\Test\\"; // В конце обязательно \\
 
         static void Main(string[] args)
         {
@@ -20,7 +20,7 @@ namespace ConsoleGenerateFiles
                 if(!DirectoryManager.IsPathExists(PATH) )
                 {
                     DirectoryManager.CreateDirectory(PATH);
-                    for(int index = 0; index <= num ; index++)
+                    for(int index = 1; index <= num ; index++)
                         File.Create(Path.Combine(PATH, $"file{index}.txt"));
                 }
 
@@ -29,7 +29,7 @@ namespace ConsoleGenerateFiles
             {
                 Console.WriteLine("Обнаружена ошибка!\n{0}", new Exception().Message);
             }
-
+            Console.ReadLine();
         }
     }
 }
