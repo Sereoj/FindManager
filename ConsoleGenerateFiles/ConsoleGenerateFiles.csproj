@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{338B3815-DCD7-4905-B53C-EA67C550BB4A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FindManagerLib</RootNamespace>
-    <AssemblyName>FindManagerLib</AssemblyName>
+    <ProjectGuid>{DE07A68D-34A6-4ACA-B2D3-E660D82B3110}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ConsoleGenerateFiles</RootNamespace>
+    <AssemblyName>ConsoleGenerateFiles</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -41,11 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DirectoryManager.cs" />
-    <Compile Include="FindManager.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FindManager\FindManager.csproj">
+      <Project>{338b3815-dcd7-4905-b53c-ea67c550bb4a}</Project>
+      <Name>FindManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Settings\SettingsManager.csproj">
       <Project>{9f4f28ef-4c1c-493e-abc6-0fe34013287f}</Project>
       <Name>SettingsManager</Name>

@@ -1,11 +1,11 @@
 ﻿using System.IO;
 
-namespace FindManager
+namespace FindManagerLib
 {
     public class DirectoryManager
     {
         /*
-         * TODO: Класс для псевдо-работы с папками.
+         * Класс для псевдо-работы с папками.
          * Базовый класс
          * Такие легкие действия, как создать, проверить, удалить. Без какой-то либо проверки!
          */

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SettingsManager;
+using System;
+using System.Collections.Generic;
 using System.IO;
 
-namespace FindManager
+namespace FindManagerLib
 {
     /*
      * 
@@ -19,8 +21,10 @@ namespace FindManager
         private string OUTPUT_PATH { get; set; }
 
 
-
-        private bool DeleteOutputDirectory{get;set; }
+        /*
+         * DeleteDefaultDirectory - Удаление начальной папки после сортировки.
+         */
+        private bool DeleteDefaultDirectory { get; set; }
 
         public enum ModeFile : byte
         {
@@ -34,10 +38,9 @@ namespace FindManager
          * Получение директории по выбору пользователя. 
          * Проверка на безопасность. 
          */
-
         public FindManager(string default_path, string path_output, bool deleteOutputDirectory = false)
         {
-            if(string.IsNullOrWhiteSpace(default_path))
+            if (string.IsNullOrWhiteSpace(default_path))
                 throw new ArgumentNullException(default_path, "Default path is NULL.");
             if (string.IsNullOrWhiteSpace(path_output))
                 throw new ArgumentNullException(path_output, "Output path is NULL.");
@@ -47,20 +50,33 @@ namespace FindManager
             {
                 DEFAULT_PATH = default_path;
                 OUTPUT_PATH = path_output;
-                DeleteOutputDirectory = deleteOutputDirectory;
+                DeleteDefaultDirectory = deleteOutputDirectory;
 
                 CreateDirectory(default_path); // Создаем, если пользователь указал неверный первичный путь
                 CreateDirectory(path_output); // Создаем, если пользователь указал неверно вторичный путь.
             }
         }
 
-
-         /*
-         * Поиск файлов небезопасный, получение данных исключительно от программы.
-         */
-        public void SearchFiles(string PathNewDirectory, string PatternExtension, ModeFile modeFile)
+        /*
+        * Поиск файлов небезопасный, получение данных исключительно от программы.
+        * Первая функция.
+        */
+        public bool SearchFiles(List<Setting> Files, ModeFile modeFile)
         {
-            foreach (var GetAllFiles in Directory.GetFiles(DEFAULT_PATH, "*.*".ToLower(), SearchOption.TopDirectoryOnly))
+            foreach ( var file in Files )
+            {
+                SearchFiles(file.Catalog, file.Extension, modeFile);
+            }
+            return false;
+        }
+
+        /*
+        * Поиск файлов небезопасный, получение данных исключительно от программы.
+        * Вторая функция.
+        */
+        public bool SearchFiles(string PathNewDirectory, string PatternExtension, ModeFile modeFile)
+        {
+            foreach (var GetAllFiles in Directory.GetFiles(DEFAULT_PATH, PatternExtension.ToLower(), SearchOption.TopDirectoryOnly))
             {
                 try
                 {
@@ -81,6 +97,8 @@ namespace FindManager
                                 case ModeFile.Ignore:
                                     break;
                             }
+
+                            return true;
                         }
                     }
                 }
@@ -88,12 +106,14 @@ namespace FindManager
                 {
 
                     throw new ArgumentException(Message.Message); //Выводим ошибку
-                    
+
                 }
             }
-            
-            if(DeleteOutputDirectory != false)
-                DeleteDirectory(OUTPUT_PATH); // Удаление начальной папки
+
+            if (DeleteDefaultDirectory != false)
+                DeleteDirectory(DEFAULT_PATH); // Удаление начальной папки
+
+            return false;
         }
     }
 }
