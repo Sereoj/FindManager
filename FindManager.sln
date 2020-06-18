@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FindManager", "FindManager\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleGenerateFiles", "ConsoleGenerateFiles\ConsoleGenerateFiles.csproj", "{DE07A68D-34A6-4ACA-B2D3-E660D82B3110}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleFindManager", "ConsoleFindManager\ConsoleFindManager.csproj", "{9C5AB3D9-E513-434F-97AB-6FBA5C9E63D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DE07A68D-34A6-4ACA-B2D3-E660D82B3110}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE07A68D-34A6-4ACA-B2D3-E660D82B3110}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE07A68D-34A6-4ACA-B2D3-E660D82B3110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C5AB3D9-E513-434F-97AB-6FBA5C9E63D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C5AB3D9-E513-434F-97AB-6FBA5C9E63D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C5AB3D9-E513-434F-97AB-6FBA5C9E63D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C5AB3D9-E513-434F-97AB-6FBA5C9E63D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

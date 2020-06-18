@@ -1,6 +1,7 @@
 ﻿using SettingsManager;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 
 namespace FindManagerLib
@@ -23,7 +24,18 @@ namespace FindManagerLib
         /*
          * Output Message for UI
          */
-        private string FindMessage { get;set;}
+        private string findmessage;
+
+        private string FindMessage {
+            get
+            {
+                return findmessage;
+            }
+            set
+            {
+                findmessage = value;
+            }
+         }
 
         /*
          * DeleteDefaultDirectory - Удаление начальной папки после сортировки.
@@ -98,14 +110,11 @@ namespace FindManagerLib
                             {
                                 case ModeFile.Copy:
                                     InfoFile.CopyTo(Path.Combine(NewDirectory, InfoFile.Name), true);
-                                    FindMessage = "Copying: " + InfoFile.FullName;
                                     break;
                                 case ModeFile.Move:
                                     InfoFile.MoveTo(Path.Combine(NewDirectory, InfoFile.Name));
-                                    FindMessage = "Moving: " + InfoFile.FullName;
                                     break;
                                 case ModeFile.Ignore:
-                                    FindMessage = "Ignoring: " + InfoFile.FullName;
                                     break;
                             }
 
@@ -125,7 +134,6 @@ namespace FindManagerLib
 
             return false;
         }
-
         public override string ToString()
         {
             return FindMessage;
