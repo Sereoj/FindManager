@@ -1,8 +1,10 @@
 ﻿using SettingsManager;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using GLMessage;
 
 namespace FindManagerLib
 {
@@ -11,132 +13,153 @@ namespace FindManagerLib
      * Поиск файлов по определенным расширениям документов.
      * 
      */
-    public class FindManager : DirectoryManager
+    public partial class FileManager : CLMessage
     {
-        /*
-         * Path - основной путь
-         * DEFAULT_PATH - Начальный path, откуда будем брать файлы. 
-         * OUTPUT_PATH - Конечный path, где будем создать директории и перекидывать файлы.
-         */
-        private string DEFAULT_PATH { get; set; }
-        private string OUTPUT_PATH { get; set; }
 
-        /*
-         * Output Message for UI
-         */
-        private string findmessage;
+        private static FileManager _model;
 
-        private string FindMessage {
-            get
-            {
-                return findmessage;
-            }
-            set
-            {
-                findmessage = value;
-            }
-         }
+        public static FileManager Model => _model ??= new FileManager();
 
-        /*
-         * DeleteDefaultDirectory - Удаление начальной папки после сортировки.
-         */
-        private bool DeleteDefaultDirectory { get; set; }
-
-        public enum ModeFile : byte
+        ~FileManager()
         {
-            Copy, // Копирование
-            Move, // Перемещение
-            Ignore // Игнорирование, использование в качестве тестирования функционала, игнорирования работы с файлами. 
+            GC.Collect(4, GCCollectionMode.Forced, true);
         }
 
-        /*
-         * Конструктор класса FindManager.
-         * Получение директории по выбору пользователя. 
-         * Проверка на безопасность. 
-         */
-        public FindManager(string default_path, string path_output, bool deleteOutputDirectory = false)
+        #region закрытые поля
+
+        private string INPUT_PATH;
+        private string OUTPUT_PATH;
+        private bool DeleteDefaultDirectory;
+        private readonly int delay = 100;
+
+        #endregion
+
+
+        #region Публичные методы
+
+        public void SetInput(string input)
         {
-            if (string.IsNullOrWhiteSpace(default_path))
-                throw new ArgumentNullException(default_path, "Default path is NULL.");
-            if (string.IsNullOrWhiteSpace(path_output))
-                throw new ArgumentNullException(path_output, "Output path is NULL.");
-
-
-            if ((IsPathExists(default_path) && IsPathExists(path_output)) != true)
+            if (Validate(input))
             {
-                DEFAULT_PATH = default_path;
-                OUTPUT_PATH = path_output;
-                DeleteDefaultDirectory = deleteOutputDirectory;
-
-                CreateDirectory(default_path); // Создаем, если пользователь указал неверный первичный путь
-                CreateDirectory(path_output); // Создаем, если пользователь указал неверно вторичный путь.
+                INPUT_PATH = input;
+                SetMessage("Проверка: " + input);
             }
+        }
+
+
+        public void SetOutput(string output)
+        {
+            if (Validate(output))
+            {
+                OUTPUT_PATH = output;
+                SetMessage("Проверка: " + output);
+            }
+        }
+
+        public void SetDeleteDirectory(bool directory = false)
+        {
+            DeleteDefaultDirectory = directory;
         }
 
         /*
         * Поиск файлов небезопасный, получение данных исключительно от программы.
         * Первая функция.
         */
-        public bool SearchFiles(List<Setting> Files, ModeFile modeFile)
+        public async Task SearchFiles(List<Setting> Files, FileMode modeFile)
         {
-            foreach ( var file in Files )
+            foreach (var file in Files)
             {
-                SearchFiles(file.Catalog, file.Extension, modeFile);
+                await Task.Delay(delay);
+                await SearchFilesAsyn(file.Catalog, file.Extension, modeFile);
             }
-            return false;
+
+            SetMessage("Работа завершилась!");
         }
 
-        /*
-        * Поиск файлов небезопасный, получение данных исключительно от программы.
-        * Вторая функция.
-        */
-        public bool SearchFiles(string PathNewDirectory, string PatternExtension, ModeFile modeFile)
+/// <summary>
+/// 
+/// </summary>
+/// <param name="PathNewDirectory">Новый путь</param>
+/// <param name="PatternExtension">Расширения</param>
+/// <param name="modeFile">Методы использования</param>
+/// <returns></returns>
+        public async Task SearchFilesAsyn(string PathNewDirectory, string PatternExtension, FileMode modeFile)
         {
-            var NewDirectory = OUTPUT_PATH + PathNewDirectory + @"\";
-            if(IsPathExists(NewDirectory))
-            CreateDirectory(NewDirectory);
+            var NewDirectory = Path.Combine(OUTPUT_PATH, PathNewDirectory);
+            SetMessage("Начало выполнения: " + PathNewDirectory);
+            await Task.Delay(delay);
 
-            foreach (var GetAllFiles in Directory.GetFiles(DEFAULT_PATH, PatternExtension.ToLower(), SearchOption.TopDirectoryOnly))
+            try
             {
-                try
-                {
-                    var GetExtension = Path.GetExtension(GetAllFiles);
-                    if (GetExtension != null && PatternExtension.Contains(GetExtension.ToLower()) && GetExtension.Length > 0)
-                    {
-                        FileInfo InfoFile = new FileInfo(GetAllFiles);
-                        if (!File.Exists(Path.Combine(NewDirectory, InfoFile.Name)))
-                        {
-                            switch (modeFile)
-                            {
-                                case ModeFile.Copy:
-                                    InfoFile.CopyTo(Path.Combine(NewDirectory, InfoFile.Name), true);
-                                    break;
-                                case ModeFile.Move:
-                                    InfoFile.MoveTo(Path.Combine(NewDirectory, InfoFile.Name));
-                                    break;
-                                case ModeFile.Ignore:
-                                    break;
-                            }
+                var files = GetFilesList(INPUT_PATH, PatternExtension);
 
-                            return true;
-                        }
+                if (files != null && (NewDirectory.IsPathExists() && files.ToList().Count > 0))
+                    NewDirectory.CreateDirectory();
+
+                foreach (var fileSingle in files)
+                {
+                    var NewFile = Path.Combine(NewDirectory + "\\" + Path.GetFileName(fileSingle));
+                    switch (modeFile)
+                    {
+                        case FileMode.Copy:
+                            File.Copy(fileSingle, NewFile, true);
+                            await Task.Delay(delay);
+                            SetMessage(NewFile);
+                            break;
+                        case FileMode.Move:
+                            File.Move(fileSingle, NewFile);
+                            await Task.Delay(delay);
+                            SetMessage(NewFile);
+                            break;
+                        case FileMode.Ignore:
+                            File.Copy(fileSingle, NewFile, true);
+                            await Task.Delay(delay);
+                            SetMessage(NewFile);
+                            break;
                     }
                 }
-                catch (ArgumentException Message)
-                {
-                    FindMessage = Message.Message;
-
-                }
             }
-            FindMessage = "Success";
-            if (DeleteDefaultDirectory != false)
-                DeleteDirectory(DEFAULT_PATH); // Удаление начальной папки
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
-            return false;
+            if (DeleteDefaultDirectory)
+                INPUT_PATH.DeleteDirectory(); // Удаление начальной папки
+
+            SetMessage("Задача завершена!");
+            await Task.Delay(delay);
         }
-        public override string ToString()
+        #endregion
+
+        #region Закрытые методы
+
+
+        /// <summary>Валидация пути</summary>
+        /// <param name="Path"></param>
+        private bool Validate(string Path)
         {
-            return FindMessage;
+            if (string.IsNullOrWhiteSpace(Path))
+                Path = Environment.CurrentDirectory;
+            //throw new ArgumentNullException(Path, "Path is NULL.");
+
+            if (Path.IsPathExists())
+            {
+                Path.CreateDirectory();
+                return true;
+            }
+            return true;
         }
+
+        private static IEnumerable<string> GetFilesList(string path, string formats)
+        {
+            var formatsLower = formats.Split(' ', ',', '\t');
+            return Directory.EnumerateFiles(path, "*.*", SearchOption.TopDirectoryOnly)
+                .Where(s => formatsLower.Contains(Path.GetExtension(s)
+                    ?.ToLowerInvariant()
+                    .Trim()));
+        }
+
+        #endregion
     }
 }

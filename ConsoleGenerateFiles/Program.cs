@@ -6,22 +6,20 @@ namespace ConsoleGenerateFiles
 {
     class Program
     {
-        private const string PATH = @"C:\Users\Admin\Desktop\Test\\"; // В конце обязательно \\
+        private const string PATH = @"C:\Users\Admin\Desktop\Test";
 
         static void Main(string[] args)
         {
-            var DirectoryManager = new DirectoryManager();
-
             Console.WriteLine("Укажите количество файлов для тестирования:");
 
 
             if( int.TryParse( Console.ReadLine(), out int num ) && num > 0  )
             {
-                if(!DirectoryManager.IsPathExists(PATH) )
+                if (!PATH.IsPathExists())
                 {
-                    DirectoryManager.CreateDirectory(PATH);
+                    PATH.CreateDirectory();
                     for(int index = 1; index <= num ; index++)
-                        File.Create(Path.Combine(PATH, $"file{index}.txt"));
+                        File.Create(Path.Combine(PATH + @"\\", $"file{index}.txt"));
                 }
 
             }

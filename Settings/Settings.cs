@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace SettingsManager
 {
-    [Serializable]
     public class Setting
     {
         /*

@@ -4,13 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{338B3815-DCD7-4905-B53C-EA67C550BB4A}</ProjectGuid>
+    <ProjectGuid>{ED17DDC1-587C-40E6-AE2C-DE9E63ADE900}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FindManagerLib</RootNamespace>
-    <AssemblyName>FindManagerLib</AssemblyName>
+    <RootNamespace>GLMessage</RootNamespace>
+    <AssemblyName>GLMessage</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <LangVersion>9.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -20,10 +19,8 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>none</ErrorReport>
+    <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,20 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileManager.FileMode.cs" />
-    <Compile Include="FindManager.cs" />
+    <Compile Include="CLMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringHelperDirectory.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GLMessage\GLMessage.csproj">
-      <Project>{ed17ddc1-587c-40e6-ae2c-de9e63ade900}</Project>
-      <Name>GLMessage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Settings\SettingsManager.csproj">
-      <Project>{9f4f28ef-4c1c-493e-abc6-0fe34013287f}</Project>
-      <Name>SettingsManager</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

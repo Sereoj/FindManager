@@ -53,6 +53,10 @@
       <Project>{338b3815-dcd7-4905-b53c-ea67c550bb4a}</Project>
       <Name>FindManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GLMessage\GLMessage.csproj">
+      <Project>{ED17DDC1-587C-40E6-AE2C-DE9E63ADE900}</Project>
+      <Name>GLMessage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Settings\SettingsManager.csproj">
       <Project>{9f4f28ef-4c1c-493e-abc6-0fe34013287f}</Project>
       <Name>SettingsManager</Name>
